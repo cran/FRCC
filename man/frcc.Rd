@@ -1,0 +1,83 @@
+\name{frcc}
+\alias{frcc}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+This function implements the Fast Regularized Canonical Correlation Analysis
+}
+\description{
+This function implements the Fast Regularized Canonical Correlation algorithm described in [Cruz-Cano et al., 2012]. 
+The main idea of the algorithm is using the minimum risk estimators of the correlation matrices described in [Schafer and Strimmer, 2008] during the calculation of the Canonical correlation Structure. 
+It can be considered an extesion of the work for two set of variables (blocks) mentioned in [Tenenhaus and Tenenhaus, 2011]
+}
+\usage{
+frcc(X, Y)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{X}{
+ numeric matrix (n by p) which contains the observations on the X variables.
+}
+  \item{Y}{
+numeric matrix (n by q) which contains the observations on the Y variables.
+}
+}
+
+\value{
+A list with the follwoing components of the Canonical Structure:
+ \item{cor }{Canonical correlations.}
+ \item{p_values }{The corresponding p-values for the each of  the canonical correlations.}
+ \item{canonical_weights_X}{The canonical weights for the variables of the dataset X.}
+ \item{canonical_weights_Y}{The canonical weights for the variables of the dataset Y.}
+ \item{canonical_factor_loadings_X}{The interset canonical factor loadings for the variables of the dataset X.}
+ \item{canonical_factor_loadings_Y}{The interset canonical factor loadings for the variables of the dataset Y.}
+}
+\references{
+Cruz-Cano, R.; Lee, M.L.T.; Fast Regularized Canonical Correlation Analysis, under review, 2012.
+
+Schafer, J; Strimmer, K. (2005). A shrinkage approach to large-scale covariance matrix estimation
+and implications for functional genomics. Statistical Applications in Genetics and Molecular
+Biology 4:14, Article 32.
+
+Tenenhaus, A.; Tenenhaus, M. (2011). Regularized Generalized Canonical Correlation Analysis.
+Psychometrika 76:2, DOI: 10.1007/S11336-011-9206-8.
+}
+\author{
+Raul Cruz-Cano
+}
+
+\examples{
+# Example # 1 Multivariate Normal Data
+p<-10
+q<-10
+n<-50
+res<-generate_multivariate_normal_sample(p,q,n)
+X<-res$X
+Y<-res$Y
+rownames(X)<-c(1:n)
+colnames(X)<-c(1:p)
+colnames(Y)<- c(1:q)
+my_res<-frcc(X,Y)
+#Example #2 Soil Specification Data
+data(soilspec)
+list_of_units_to_be_used<-sample(1:nrow(soilspec),14)
+X<- soilspec[list_of_units_to_be_used,2:9]
+Y<- soilspec[list_of_units_to_be_used,10:15]
+colnames(X)<-c("H. pubescens", "P. bertolonii", "T. pretense", 
+"P. sanguisorba", "R. squarrosus", "H. pilosella", "B. media","T. drucei")
+colnames(Y)<- c("d","P","K","d x P", "d x K","P x K")
+my_res<-frcc(X,Y)
+dev.new()
+plot_variables(my_res,1,2)
+#Example #3 NCI-60 micrRNA Data
+data("Topoisomerase_II_Inhibitors")
+data("microRNA")
+my_res <- frcc(t(microRNA),-1*t(Topoisomerase_II_Inhibitors))
+for( i in 1:dim(microRNA)[2])
+{
+ colnames(microRNA)[i]<-substr(colnames(microRNA)[i], 1, 2)
+}#end for i
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+}
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
